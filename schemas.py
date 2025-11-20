@@ -14,8 +14,6 @@ Model name is converted to lowercase for the collection name:
 from pydantic import BaseModel, Field
 from typing import Optional
 
-# Example schemas (replace with your own):
-
 class User(BaseModel):
     """
     Users collection schema
@@ -23,26 +21,41 @@ class User(BaseModel):
     """
     name: str = Field(..., description="Full name")
     email: str = Field(..., description="Email address")
-    address: str = Field(..., description="Address")
-    age: Optional[int] = Field(None, ge=0, le=120, description="Age in years")
+    hashed_password: str = Field(..., description="Password hash (never store raw password)")
+    avatar_url: Optional[str] = Field(None, description="Profile image URL")
     is_active: bool = Field(True, description="Whether user is active")
+
+class Course(BaseModel):
+    """
+    Courses collection schema
+    Collection name: "course"
+    """
+    title: str = Field(..., description="Course title")
+    description: str = Field(..., description="Short description")
+    price: float = Field(..., ge=0, description="Price in USD")
+    level: str = Field("Beginner", description="Difficulty level")
+    duration: str = Field("", description="Total duration, e.g., '6h 30m'")
+    lessons_count: int = Field(0, ge=0, description="Number of lessons")
+    thumbnail_url: Optional[str] = Field(None, description="Thumbnail image URL")
+    preview_video_url: Optional[str] = Field(None, description="Preview video URL")
 
 class Product(BaseModel):
     """
     Products collection schema
-    Collection name: "product" (lowercase of class name)
+    Collection name: "product"
     """
     title: str = Field(..., description="Product title")
     description: Optional[str] = Field(None, description="Product description")
     price: float = Field(..., ge=0, description="Price in dollars")
-    category: str = Field(..., description="Product category")
+    category: str = Field("material", description="Product category, e.g., material, book")
     in_stock: bool = Field(True, description="Whether product is in stock")
+    image_url: Optional[str] = Field(None, description="Image URL")
 
-# Add your own schemas here:
-# --------------------------------------------------
-
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+class ContactMessage(BaseModel):
+    """
+    Contact messages from the website
+    Collection name: "contactmessage"
+    """
+    name: str = Field(..., description="Sender name")
+    email: str = Field(..., description="Sender email")
+    message: str = Field(..., description="Message body")
